@@ -5,6 +5,8 @@ import com.dhl.yxg.data.ExportData_412;
 import com.dhl.yxg.util.WriteLogs;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataBaseSearch {
 
@@ -14,7 +16,7 @@ public class DataBaseSearch {
     private static final String USER = "naouser";//数据库用户名
     private static final String PASSWORD = "naouser123";//数据库密码
 
-    public ExportData_412 GetExportData_412(String startDate, String endData) {
+    public List<ExportData_412> GetExportData_412(String startDate, String endData) {
         try {
             System.out.println("驱动程序开始加载");
             Class.forName(DBDRIVER);
@@ -54,6 +56,9 @@ public class DataBaseSearch {
                 "or (GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and ShipAddr like N'%YANHAI%')" +
                 "or (GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and ShipCompany like N'%Institute of Chemical Physics%')" +
                 "or (GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and ShipCompany like N'%Naval Academy%')";
+
+        List<ExportData_412> list = new ArrayList<ExportData_412>();
+
         try {
 //            LOG.info("连接数据库");
             System.out.println("连接数据库");
@@ -117,6 +122,9 @@ public class DataBaseSearch {
                 exportData_412.setRecipientPhone(m_recipientPhone);
 //                WriteLogs wr = new WriteLogs();
 //                wr.WriteLogToTXT(exportData_412.toString());
+                list.add(exportData_412);
+
+                exportData_412 = new ExportData_412();
             }
             if (rs != null) {
 //                LOG.info("rs.close()");
@@ -139,7 +147,6 @@ public class DataBaseSearch {
         } catch (Exception e) {
 //            LOG.info("数据库连接异常发生" + e.getMessage());
         }
-        return exportData_412;
+        return list;
     }
-
 }

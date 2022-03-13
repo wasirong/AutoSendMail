@@ -1,5 +1,8 @@
 package com.dhl.yxg.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExportData_412 {
 
     // 本地航班日期
@@ -150,5 +153,39 @@ public class ExportData_412 {
                 ", RecipientCountry='" + RecipientCountry + '\'' +
                 ", RecipientPhone='" + RecipientPhone + '\'' +
                 '}';
+    }
+
+    public List<String> dataList(){
+        List<String> list = new ArrayList<String>();
+        list.add(LocalFlightDate);
+        list.add(LocalMasterWaybillNo);
+        list.add(ShippingOrderNo);
+        list.add(DeclarationCategory);
+        list.add(Pieces);
+        list.add(Weight);
+        list.add(ChineseName);
+        list.add(SenderCompany);
+        list.add(SenderAddress);
+        list.add(SenderCity);
+        list.add(RecipientCountry);
+        list.add(RecipientPhone);
+        return list;
+    }
+
+    public List<String> titleList(){
+        List<String> titleList = new ArrayList<String>();
+        titleList.add("本地航班日期");
+        titleList.add("本地总运单号");
+        titleList.add("分运单号");
+        titleList.add("申报类别");
+        titleList.add("件数");
+        titleList.add("重量");
+        titleList.add("中文品名");
+        titleList.add("发件人公司");
+        titleList.add("发件人地址");
+        titleList.add("发件人城市");
+        titleList.add("收件人国家");
+        titleList.add("收件人电话");
+        return titleList;
     }
 }
