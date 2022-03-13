@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class JFXMain extends Application {
 
     public static Stage stage = null;
     private static double xOffset = 0;
