@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dhl.yxg.controllers.Controller">
+    <columnConstraints>
+        <ColumnConstraints />
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+    </rowConstraints>
+    <ImageView>
+<!--        <Image url="Picture1.jpg">-->
+<!--        </Image>-->
+    </ImageView>
+    <children>
+        <Pane prefHeight="414.0" prefWidth="849.0" GridPane.columnIndex="1">
+            <children>
+                <Label layoutX="17.0" layoutY="29.0" text="邮件类型 :">
+                    <font>
+                        <Font name="Microsoft YaHei Bold" size="16.0" />
+                    </font>
+                </Label>
+                <ComboBox fx:id="MailTypeID" layoutX="103.0" layoutY="24.0" prefHeight="30.0" prefWidth="232.0" />
+
+                <Label layoutX="17.0" layoutY="84.0" text="起始时间 :">
+                    <font>
+                        <Font name="Microsoft YaHei Bold" size="16.0" />
+                    </font>
+                </Label>
+                <DatePicker fx:id="StartTimeID" layoutX="103.0" layoutY="79.0" />
+                <Label layoutX="17.0" layoutY="128.0" text="结束时间 :">
+                    <font>
+                       <Font name="Microsoft YaHei Bold" size="16.0" />
+                    </font>
+                </Label>
+                <DatePicker fx:id="EndTimeID" layoutX="103.0" layoutY="123.0" />
+                <Button fx:id="CreateModelID" layoutX="17.0" layoutY="171.0" mnemonicParsing="false" onAction="#CreateEnclosure" text="附件作成" />
+                <Separator layoutX="-3.0" layoutY="213.0" prefHeight="0.0" prefWidth="840.0" />
+            </children>
+        </Pane>
+    </children>
+</GridPane>
