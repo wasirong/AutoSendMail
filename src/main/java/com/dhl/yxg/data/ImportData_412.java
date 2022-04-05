@@ -1,5 +1,8 @@
 package com.dhl.yxg.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ImportData_412 {
     // 航班日期
     private String FlightDate;
@@ -153,5 +156,43 @@ public class ImportData_412 {
 
     public void setRecipientPhone(String recipientPhone) {
         RecipientPhone = recipientPhone;
+    }
+
+    public List<String> dataList(){
+        List<String> list = new ArrayList<String>();
+        list.add(FlightDate);
+        list.add(TotalWaybillNo);
+        list.add(ShippingOrderNo);
+        list.add(DeclarationCategory);
+        list.add(Number);
+        list.add(Weight);
+        list.add(Destination);
+        list.add(ChineseName);
+        list.add(SenderPhone);
+        list.add(SendingCountry);
+        list.add(RecipientCompany_EN);
+        list.add(RecipientCity);
+        list.add(RecipientAddress);
+        list.add(RecipientPhone);
+        return list;
+    }
+
+    public List<String> titleList(){
+        List<String> titleList = new ArrayList<String>();
+        titleList.add("航班日期");
+        titleList.add("总运单号");
+        titleList.add("分运单号");
+        titleList.add("申报类别");
+        titleList.add("件数");
+        titleList.add("重量");
+        titleList.add("目的地");
+        titleList.add("中文品名");
+        titleList.add("发件人电话");
+        titleList.add("发件国家");
+        titleList.add("收件人公司(EN)");
+        titleList.add("收件人城市");
+        titleList.add("收件人地址");
+        titleList.add("收件人电话");
+        return titleList;
     }
 }

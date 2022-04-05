@@ -1,6 +1,8 @@
 package com.dhl.yxg.util;
 
 import com.dhl.yxg.data.ExportData_412;
+import com.dhl.yxg.data.ImportData_412;
+import org.apache.commons.math3.analysis.function.Exp;
 import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
 import org.apache.poi.hssf.usermodel.HeaderFooter;
 import org.apache.poi.ss.usermodel.*;
@@ -11,7 +13,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class CreateWorkbook {
-    public XSSFWorkbook generateExcel(String sheetName, List<Object> objectList) throws IOException {
+
+    public XSSFWorkbook generateExcel_Export412(String sheetName, List<ExportData_412> objectList) throws IOException {
         //创建工作薄
         XSSFWorkbook workbook = new XSSFWorkbook();
 
@@ -24,12 +27,27 @@ public class CreateWorkbook {
         XSSFCellStyle contextStyle = genContextStyle(workbook);//创建文本样式
 
         //创建Excel
-        switch (sheetName) {
-            case "421出口数据":
-                genExcel_ExportData_412(sheet, titleStyle, contextStyle, objectList);
-        }
+        genExcel_ExportData_412(sheet, titleStyle, contextStyle, objectList, sheetName);
 
         return workbook;
+    }
+
+    public XSSFWorkbook generateExcel_Import412(String sheetName, List<ImportData_412> objectList) throws IOException{
+
+        //创建工作薄
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        //创建表单
+        XSSFSheet sheet = genSheet(workbook, sheetName);
+
+        //创建表单样式
+        XSSFCellStyle titleStyle = genTitleStyle(workbook);//创建标题样式
+
+        XSSFCellStyle contextStyle = genContextStyle(workbook);//创建文本样式
+
+        genExcel_ImportData_412(sheet, titleStyle, contextStyle, objectList, sheetName);
+
+        return null;
     }
 
     //设置表单，并生成表单
@@ -104,18 +122,20 @@ public class CreateWorkbook {
         return style;
     }
 
-    public void genExcel_ExportData_412(XSSFSheet sheet, XSSFCellStyle titleStyle, XSSFCellStyle contextStyle, List<Object> objList) {
+    public void genExcel_ExportData_412(XSSFSheet sheet, XSSFCellStyle titleStyle, XSSFCellStyle contextStyle, List<ExportData_412> objList, String titleContent) {
 
-        //根据Excel列名长度，指定列名宽度  Excel总共10列
+        //根据Excel列名长度，指定列名宽度  Excel总共12列
         for (int i = 0; i < 12; i++) {
-            if (i == 0 || i == 1) {
+            if (i == 0) {
+                sheet.setColumnWidth(i, 5400);
+            }else if (i == 1){
                 sheet.setColumnWidth(i, 4800);
             } else if (i == 2 || i == 3 || i == 6) {
                 sheet.setColumnWidth(i, 3200);
             } else if (i == 4 || i == 5) {
                 sheet.setColumnWidth(i, 1600);
             } else if (i == 7 || i == 8) {
-                sheet.setColumnWidth(i, 6400);
+                sheet.setColumnWidth(i, 12800);
             } else {
                 sheet.setColumnWidth(i, 4000);
             }
@@ -132,7 +152,7 @@ public class CreateWorkbook {
         XSSFRow row = sheet.createRow(0);//创建第一行，为标题，index从0开始
         XSSFCell cell;
         cell = row.createCell(0);//创建一列
-        cell.setCellValue("421出口数据");//标题
+        cell.setCellValue(titleContent);//标题
         cell.setCellStyle(titleStyle);//设置标题样式
 
         row = sheet.createRow(1);//创建第二行
@@ -140,14 +160,83 @@ public class CreateWorkbook {
         for (int k = 0; k < title.size(); k++) {
             cell = row.createCell(k);//创建第二行第一列
             cell.setCellValue(title.get(k));
+            cell.setCellStyle(contextStyle);
         }
 
         for (int i = 0; i < objList.size(); i++) {
-            ExportData_412 exportData_412 = (ExportData_412) objList.get(i);
+            ExportData_412 exportData_412 = (ExportData_412) (objList.get(i));
             row = sheet.createRow(i + 2);//创建第三行
             for (int j = 0; j < exportData_412.dataList().size(); j++) {
                 cell = row.createCell(j);//创建第三行第一列
                 cell.setCellValue(exportData_412.dataList().get(j));//第三行第一列的值
+                cell.setCellStyle(contextStyle);
+            }
+        }
+    }
+
+    public void genExcel_ImportData_412(XSSFSheet sheet, XSSFCellStyle titleStyle, XSSFCellStyle contextStyle, List<ImportData_412> objList, String titleContent) {
+
+        //根据Excel列名长度，指定列名宽度  Excel总共10列
+        for (int i = 0; i < 14; i++) {
+            if (i == 0) {
+                sheet.setColumnWidth(i, 4800);
+            }else if (i == 1){
+                sheet.setColumnWidth(i, 4800);
+            } else if (i == 2) {
+                sheet.setColumnWidth(i, 4800);
+            } else if (i == 3) {
+                sheet.setColumnWidth(i, 3200);
+            } else if (i == 4) {
+                sheet.setColumnWidth(i, 1600);
+            } else if (i == 5) {
+                sheet.setColumnWidth(i, 1600);
+            }else if (i == 6) {
+                sheet.setColumnWidth(i, 2800);
+            }else if (i == 7) {
+                sheet.setColumnWidth(i, 3200);
+            }else if (i == 8) {
+                sheet.setColumnWidth(i, 7200);
+            }else if (i == 9) {
+                sheet.setColumnWidth(i, 3200);
+            }else if (i == 10) {
+                sheet.setColumnWidth(i, 12800);
+            }else if (i == 11) {
+                sheet.setColumnWidth(i, 4800);
+            }else if (i == 12) {
+                sheet.setColumnWidth(i, 25600);
+            }else {
+                sheet.setColumnWidth(i, 6400);
+            }
+        }
+
+        //设置标题位置
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row
+                0, //last row
+                0, //first column
+                13 //last column
+        ));
+
+        XSSFRow row = sheet.createRow(0);//创建第一行，为标题，index从0开始
+        XSSFCell cell;
+        cell = row.createCell(0);//创建一列
+        cell.setCellValue(titleContent);//标题
+        cell.setCellStyle(titleStyle);//设置标题样式
+
+        row = sheet.createRow(1);//创建第二行
+        List<String> title = new ImportData_412().titleList();
+        for (int k = 0; k < title.size(); k++) {
+            cell = row.createCell(k);//创建第二行第一列
+            cell.setCellValue(title.get(k));
+            cell.setCellStyle(contextStyle);
+        }
+
+        for (int i = 0; i < objList.size(); i++) {
+            ImportData_412 importData_412 = (ImportData_412) (objList.get(i));
+            row = sheet.createRow(i + 2);//创建第三行
+            for (int j = 0; j < importData_412.dataList().size(); j++) {
+                cell = row.createCell(j);//创建第三行第一列
+                cell.setCellValue(importData_412.dataList().get(j));//第三行第一列的值
                 cell.setCellStyle(contextStyle);
             }
         }
