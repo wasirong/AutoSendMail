@@ -1,5 +1,8 @@
 package com.dhl.yxg.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DaysOFGoodsInWarehouse {
 
     private String bond_int_id;
@@ -271,4 +274,69 @@ public class DaysOFGoodsInWarehouse {
     public void setCSUser(String CSUser) {
         this.CSUser = CSUser;
     }
+
+    public List<String> dataList(){
+        List<String> list = new ArrayList<String>();
+        list.add(bond_int_id);
+        list.add(bond_vchar_gtw);
+        list.add(bond_vchar_hawb);
+        list.add(bond_date_first_report);
+        list.add(bond_vchar_location);
+        list.add(bond_date_last_report);
+        list.add(bond_date_arrdate);
+        list.add(bond_int_dayinbond);
+        list.add(bond_vchar_cnee);
+        list.add(bond_vchar_orig);
+        list.add(bond_vchar_dest);
+        list.add(bond_dou_weight);
+        list.add(bond_int_pces);
+        list.add(bond_int_scanned);
+        list.add(bond_vchar_status);
+        list.add(bond_vchar_br);
+        list.add(bond_NO);
+        list.add(bond_dttm_INSP);
+        list.add(bond_dttm_LastManage);
+        list.add(bond_LastManager);
+        list.add(bond_LastCommentType);
+        list.add(bond_color);
+        list.add(bond_LastCommentType2);
+        list.add(bond_LastCommentType_bkup);
+        list.add(HawbId);
+        list.add(Hawb);
+        list.add(CSUser);
+        return list;
+    }
+
+    public List<String> titleList(){
+        List<String> titleList = new ArrayList<String>();
+        titleList.add("bond_int_id");
+        titleList.add("bond_vchar_gtw");
+        titleList.add("bond_vchar_hawb");
+        titleList.add("bond_date_first_report");
+        titleList.add("bond_date_last_report");
+        titleList.add("bond_vchar_location");
+        titleList.add("bond_date_arrdate");
+        titleList.add("bond_int_dayinbond");
+        titleList.add("bond_vchar_cnee");
+        titleList.add("bond_vchar_orig");
+        titleList.add("bond_vchar_dest");
+        titleList.add("bond_dou_weight");
+        titleList.add("bond_int_pces");
+        titleList.add("bond_int_scanned");
+        titleList.add("bond_vchar_status");
+        titleList.add("bond_vchar_br");
+        titleList.add("bond_NO");
+        titleList.add("bond_dttm_INSP");
+        titleList.add("bond_dttm_LastManage");
+        titleList.add("bond_LastManager");
+        titleList.add("bond_LastCommentType");
+        titleList.add("bond_color");
+        titleList.add("bond_LastCommentType2");
+        titleList.add("bond_LastCommentType_bkup");
+        titleList.add("HawbId");
+        titleList.add("Hawb");
+        titleList.add("CSUser");
+        return titleList;
+    }
+
 }

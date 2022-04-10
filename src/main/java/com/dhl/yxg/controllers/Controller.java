@@ -1,9 +1,7 @@
 package com.dhl.yxg.controllers;
 
 import com.dhl.yxg.accessSqlUtil.DataBaseSearch;
-import com.dhl.yxg.data.ExportData_412;
-import com.dhl.yxg.data.Export_Report_5i;
-import com.dhl.yxg.data.ImportData_412;
+import com.dhl.yxg.data.*;
 import com.dhl.yxg.util.CreateWorkbook;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -87,7 +85,14 @@ public class Controller {
                     workbook = createWorkbook.generateExcel_ExportReport_5i(m_currentType, dataListExportReport_5i);
                     break;
 
+                case "换单放行数据":
+                    List<ReplacementReleaseData> dataListReplacementRelease = dataBaseSearch.GetReplacementRelease(StartTimeID.getValue().toString(), EndTimeID.getValue().toString());
+                    workbook = createWorkbook.generateExcel_ReplacementRelease(m_currentType, dataListReplacementRelease);
+                    break;
+
                 case "货物14+在库天数":
+                    List<DaysOFGoodsInWarehouse> daysOFGoodsInWarehouses = dataBaseSearch.GetDaysOFGoodsInWarehouses(StartTimeID.getValue().toString(), EndTimeID.getValue().toString());
+                    workbook = createWorkbook.generateExcel_DaysOFGoodsInWarehouse(m_currentType, daysOFGoodsInWarehouses);
                     break;
 
                 case "客联工作量统计":

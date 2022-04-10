@@ -1,8 +1,6 @@
 package com.dhl.yxg.util;
 
-import com.dhl.yxg.data.ExportData_412;
-import com.dhl.yxg.data.Export_Report_5i;
-import com.dhl.yxg.data.ImportData_412;
+import com.dhl.yxg.data.*;
 import org.apache.commons.math3.analysis.function.Exp;
 import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
 import org.apache.poi.hssf.usermodel.HeaderFooter;
@@ -68,6 +66,43 @@ public class CreateWorkbook {
 
         return workbook;
     }
+
+    public XSSFWorkbook generateExcel_ReplacementRelease(String sheetName, List<ReplacementReleaseData> objectList) throws IOException {
+
+        //创建工作薄
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        //创建表单
+        XSSFSheet sheet = genSheet(workbook, sheetName);
+
+        //创建表单样式
+        XSSFCellStyle titleStyle = genTitleStyle(workbook);//创建标题样式
+
+        XSSFCellStyle contextStyle = genContextStyle(workbook);//创建文本样式
+
+        genExcel_ReplacementReleaseData(sheet, titleStyle, contextStyle, objectList, sheetName);
+
+        return workbook;
+    }
+
+    public XSSFWorkbook generateExcel_DaysOFGoodsInWarehouse(String sheetName, List<DaysOFGoodsInWarehouse> objectList) throws IOException {
+
+        //创建工作薄
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        //创建表单
+        XSSFSheet sheet = genSheet(workbook, sheetName);
+
+        //创建表单样式
+        XSSFCellStyle titleStyle = genTitleStyle(workbook);//创建标题样式
+
+        XSSFCellStyle contextStyle = genContextStyle(workbook);//创建文本样式
+
+        genExcel_DaysOFGoodsInWarehouse(sheet, titleStyle, contextStyle, objectList, sheetName);
+
+        return workbook;
+    }
+
 
     //设置表单，并生成表单
     public XSSFSheet genSheet(XSSFWorkbook workbook, String sheetName) {
@@ -281,7 +316,7 @@ public class CreateWorkbook {
                 sheet.setColumnWidth(i, 34000);
             } else if (i == 7) {
                 sheet.setColumnWidth(i, 31000);
-            } else{
+            } else {
                 sheet.setColumnWidth(i, 7200);
             }
         }
@@ -314,6 +349,102 @@ public class CreateWorkbook {
             for (int j = 0; j < export_report_5i.dataList().size(); j++) {
                 cell = row.createCell(j);//创建第三行第一列
                 cell.setCellValue(export_report_5i.dataList().get(j));//第三行第一列的值
+                cell.setCellStyle(contextStyle);
+            }
+        }
+    }
+
+    public void genExcel_ReplacementReleaseData(XSSFSheet sheet, XSSFCellStyle titleStyle, XSSFCellStyle contextStyle, List<ReplacementReleaseData> objList, String titleContent) {
+
+        //根据Excel列名长度，指定列名宽度  Excel总共9列
+        for (int i = 0; i < 5; i++) {
+            if (i == 0) {
+                sheet.setColumnWidth(i, 4800);
+            } else if (i == 1) {
+                sheet.setColumnWidth(i, 4800);
+            } else if (i == 2) {
+                sheet.setColumnWidth(i, 4800);
+            } else if (i == 3) {
+                sheet.setColumnWidth(i, 4800);
+            } else {
+                sheet.setColumnWidth(i, 11000);
+            }
+        }
+
+        //设置标题位置
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row
+                0, //last row
+                0, //first column
+                4 //last column
+        ));
+
+        XSSFRow row = sheet.createRow(0);//创建第一行，为标题，index从0开始
+        XSSFCell cell;
+        cell = row.createCell(0);//创建一列
+        cell.setCellValue(titleContent);//标题
+        cell.setCellStyle(titleStyle);//设置标题样式
+
+        row = sheet.createRow(1);//创建第二行
+        List<String> title = new ReplacementReleaseData().titleList();
+        for (int k = 0; k < title.size(); k++) {
+            cell = row.createCell(k);//创建第二行第一列
+            cell.setCellValue(title.get(k));
+            cell.setCellStyle(contextStyle);
+        }
+
+        for (int i = 0; i < objList.size(); i++) {
+            ReplacementReleaseData replacementReleaseData = (ReplacementReleaseData) (objList.get(i));
+            row = sheet.createRow(i + 2);//创建第三行
+            for (int j = 0; j < replacementReleaseData.dataList().size(); j++) {
+                cell = row.createCell(j);//创建第三行第一列
+                cell.setCellValue(replacementReleaseData.dataList().get(j));//第三行第一列的值
+                cell.setCellStyle(contextStyle);
+            }
+        }
+    }
+
+    public void genExcel_DaysOFGoodsInWarehouse(XSSFSheet sheet, XSSFCellStyle titleStyle, XSSFCellStyle contextStyle, List<DaysOFGoodsInWarehouse> objList, String titleContent) {
+
+        //根据Excel列名长度，指定列名宽度  Excel总共9列
+        for (int i = 0; i < 27; i++) {
+            if (i == 8) {
+                sheet.setColumnWidth(i, 7200);
+            } else if (i == 19) {
+                sheet.setColumnWidth(i, 6400);
+            } else {
+                sheet.setColumnWidth(i, 4800);
+            }
+        }
+
+        //设置标题位置
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row
+                0, //last row
+                0, //first column
+                26 //last column
+        ));
+
+        XSSFRow row = sheet.createRow(0);//创建第一行，为标题，index从0开始
+        XSSFCell cell;
+        cell = row.createCell(0);//创建一列
+        cell.setCellValue(titleContent);//标题
+        cell.setCellStyle(titleStyle);//设置标题样式
+
+        row = sheet.createRow(1);//创建第二行
+        List<String> title = new DaysOFGoodsInWarehouse().titleList();
+        for (int k = 0; k < title.size(); k++) {
+            cell = row.createCell(k);//创建第二行第一列
+            cell.setCellValue(title.get(k));
+            cell.setCellStyle(contextStyle);
+        }
+
+        for (int i = 0; i < objList.size(); i++) {
+            DaysOFGoodsInWarehouse daysOFGoodsInWarehouse = (DaysOFGoodsInWarehouse) (objList.get(i));
+            row = sheet.createRow(i + 2);//创建第三行
+            for (int j = 0; j < daysOFGoodsInWarehouse.dataList().size(); j++) {
+                cell = row.createCell(j);//创建第三行第一列
+                cell.setCellValue(daysOFGoodsInWarehouse.dataList().get(j));//第三行第一列的值
                 cell.setCellStyle(contextStyle);
             }
         }

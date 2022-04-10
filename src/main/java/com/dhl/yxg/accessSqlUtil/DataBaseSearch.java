@@ -1,9 +1,7 @@
 package com.dhl.yxg.accessSqlUtil;
 
 
-import com.dhl.yxg.data.ExportData_412;
-import com.dhl.yxg.data.Export_Report_5i;
-import com.dhl.yxg.data.ImportData_412;
+import com.dhl.yxg.data.*;
 import com.dhl.yxg.util.WriteLogs;
 
 import java.sql.*;
@@ -409,4 +407,267 @@ public class DataBaseSearch {
 
         return list;
     }
+
+    public List<ReplacementReleaseData> GetReplacementRelease(String startDate, String endDate) {
+        try {
+            System.out.println("驱动程序开始加载");
+            Class.forName(DBDRIVER);
+            System.out.println("驱动程序已加载");
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("驱动程序加载异常发生:" + e.getMessage());
+        }
+
+        ReplacementReleaseData replacementReleaseData = new ReplacementReleaseData();
+
+        Connection conn;
+        Statement stmt;
+        ResultSet rs;
+
+        String sql = "Select " +
+                "Hawb," +
+                "Type," +
+                "LastAccessDtm," +
+                "LastAccessUser," +
+                "nao_cdms_import.dbo.HawbLog.Comment " +
+                "from nao_cdms_import.dbo.HawbLog " +
+                "left join nao_cdms_import.dbo.ShipmentWip " +
+                "on nao_cdms_import.dbo.ShipmentWip.HawbId = nao_cdms_import.dbo.HawbLog.HawbId " +
+                "where " +
+                "LastAccessUser = 'SR_DLCGTWFRONTDE' " +
+                "and nao_cdms_import.dbo.HawbLog.Comment like N'%E1-海关手工放行%' " +
+                "and LastAccessDtm between '" + startDate + "' and '" + endDate + "' " +
+                "order by LastAccessDtm asc";
+
+        List<ReplacementReleaseData> list = new ArrayList<ReplacementReleaseData>();
+
+        try {
+//            LOG.info("连接数据库");
+            System.out.println("连接数据库");
+            // 连接数据库
+//            conn = DriverManager.getConnection(url, user, password);
+            conn = DriverManager.getConnection(DBURL, USER, PASSWORD);
+            System.out.println(conn);//输出数据库连接
+            System.out.println("建立Statement对象");
+            // 建立Statement对象
+            stmt = conn.createStatement();
+//            LOG.info("执行数据库查询语句 : " + sql);
+            // 执行数据库查询语句
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String m_hawb = rs.getString("Hawb");
+                replacementReleaseData.setHawb(m_hawb);
+
+                String m_type = rs.getString("Type");
+                replacementReleaseData.setType(m_type);
+
+                String m_lastAccessDtm = rs.getString("LastAccessDtm");
+                replacementReleaseData.setLastAccessDtm(m_lastAccessDtm);
+
+                String m_lastAccessUser = rs.getString("LastAccessUser");
+                replacementReleaseData.setLastAccessDtm(m_lastAccessUser);
+
+                String m_comment = rs.getString("Comment");
+                replacementReleaseData.setComment(m_comment);
+
+                list.add(replacementReleaseData);
+
+                replacementReleaseData = new ReplacementReleaseData();
+            }
+            rs.close();
+            rs = null;
+            stmt.close();
+            stmt = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+//            LOG.info("数据库连接失败" + e.getMessage());
+        } catch (Exception e) {
+//            LOG.info("数据库连接异常发生" + e.getMessage());
+        }
+        return list;
+    }
+
+    public List<DaysOFGoodsInWarehouse> GetDaysOFGoodsInWarehouses(String startDate, String endDate) {
+        try {
+            System.out.println("驱动程序开始加载");
+            Class.forName(DBDRIVER);
+            System.out.println("驱动程序已加载");
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("驱动程序加载异常发生:" + e.getMessage());
+        }
+
+        DaysOFGoodsInWarehouse daysOFGoodsInWarehouse = new DaysOFGoodsInWarehouse();
+
+        Connection conn;
+        Statement stmt;
+        ResultSet rs;
+
+        String sql = "Select * from ( SELECT [bond_int_id], " +
+                "[bond_vchar_gtw]," +
+                "[bond_vchar_hawb]," +
+                "[bond_date_first_report]," +
+                "[bond_date_last_report]," +
+                "[bond_vchar_location]," +
+                "[bond_date_arrdate], " +
+                "[bond_int_dayinbond], " +
+                "[bond_vchar_cnee], " +
+                "[bond_vchar_orig], " +
+                "[bond_vchar_dest], " +
+                "[bond_dou_weight], " +
+                "[bond_int_pces], " +
+                "[bond_int_scanned], " +
+                "[bond_vchar_status], " +
+                "[bond_vchar_br], " +
+                "[bond_NO], " +
+                "[bond_dttm_INSP], " +
+                "[bond_dttm_LastManage], " +
+                "[bond_LastManager], " +
+                "[bond_LastCommentType], " +
+                "[bond_color], " +
+                "[bond_LastCommentType2], " +
+                "[bond_LastCommentType_bkup], " +
+                "from [db_GPMS].[dbo].[tb_bond_daily_data] where [bond_vchar_gtw] = 'DLC' AND [bond_date_last_report] BETWEEN ' " + startDate + "' AND '" + endDate + "' AND [bond_int_dayinbond] > 13 ) " +
+                "A left join(select [HawbId]," +
+                "[Hawb]," +
+                "[CSUser] from (select L.[HawbId], " +
+                "L.[Hawb], " +
+                "L.[GTW], " +
+                "L.[PayerAccount], " +
+                "L.[CSUser], " +
+                "L.[CreationDate] " +
+                "ROW_NUMBER() OVER(PARTITION BY L.[Hawb] ORDER BY L.[CreationDate] DESC) AS [DtmBYHawbidRank]from(SELECT [HawbId], " +
+                "[Hawb], " +
+                "[GTW], " +
+                "[PayerAccount], " +
+                "[CSUser], " +
+                "[CreationDate] " +
+                "FROM [nao_cdms_import].[dbo].[ShipmentWip] WHERE [GTW] = 'DLC' union " +
+                "select [HawbId], " +
+                "[Hawb], " +
+                "[GTW], " +
+                "[PayerAccount], " +
+                "[CSUser], " +
+                "[CreationDate] " +
+                "FROM [nao_cdms_import_his1].[dbo].[ShipmentWip]WHERE[GTW] = 'DLC' )L )M " +
+                "WHERE M.[DtmBYHawbidRank]  = 1) B ON A.[bond_vchar_hawb]  COLLATE DATABASE_DEFAULT = B.[Hawb] COLLATE DATABASE_DEFAULT ";
+
+        List<DaysOFGoodsInWarehouse> list = new ArrayList<DaysOFGoodsInWarehouse>();
+
+        try {
+//            LOG.info("连接数据库");
+            System.out.println("连接数据库");
+            // 连接数据库
+//            conn = DriverManager.getConnection(url, user, password);
+            conn = DriverManager.getConnection(DBURL, USER, PASSWORD);
+            System.out.println(conn);//输出数据库连接
+            System.out.println("建立Statement对象");
+            // 建立Statement对象
+            stmt = conn.createStatement();
+//            LOG.info("执行数据库查询语句 : " + sql);
+            // 执行数据库查询语句
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String m_bond_int_id = rs.getString("bond_int_id");
+                daysOFGoodsInWarehouse.setBond_int_id(m_bond_int_id);
+
+                String m_bond_vchar_gtw = rs.getString("bond_vchar_gtw");
+                daysOFGoodsInWarehouse.setBond_vchar_gtw(m_bond_vchar_gtw);
+
+                String m_bond_vchar_hawb = rs.getString("bond_vchar_hawb");
+                daysOFGoodsInWarehouse.setBond_vchar_hawb(m_bond_vchar_hawb);
+
+                String m_bond_date_first_report = rs.getString("bond_date_first_report");
+                daysOFGoodsInWarehouse.setBond_date_first_report(m_bond_date_first_report);
+
+                String m_bond_date_last_report = rs.getString("bond_date_last_report");
+                daysOFGoodsInWarehouse.setBond_date_last_report(m_bond_date_last_report);
+
+                String m_bond_vchar_location = rs.getString("bond_vchar_location");
+                daysOFGoodsInWarehouse.setBond_vchar_location(m_bond_vchar_location);
+
+                String m_bond_date_arrdate = rs.getString("bond_date_arrdate");
+                daysOFGoodsInWarehouse.setBond_date_arrdate(m_bond_date_arrdate);
+
+                String m_bond_int_dayinbond = rs.getString("bond_int_dayinbond");
+                daysOFGoodsInWarehouse.setBond_int_dayinbond(m_bond_int_dayinbond);
+
+                String m_bond_vchar_cnee = rs.getString("bond_vchar_cnee");
+                daysOFGoodsInWarehouse.setBond_vchar_cnee(m_bond_vchar_cnee);
+
+                String m_bond_vchar_orig = rs.getString("bond_vchar_orig");
+                daysOFGoodsInWarehouse.setBond_vchar_orig(m_bond_vchar_orig);
+
+                String m_bond_vchar_dest = rs.getString("bond_vchar_dest");
+                daysOFGoodsInWarehouse.setBond_vchar_dest(m_bond_vchar_dest);
+
+                String m_bond_dou_weight = rs.getString("bond_dou_weight");
+                daysOFGoodsInWarehouse.setBond_dou_weight(m_bond_dou_weight);
+
+                String m_bond_int_pces = rs.getString("bond_int_pces");
+                daysOFGoodsInWarehouse.setBond_int_pces(m_bond_int_pces);
+
+                String m_bond_int_scanned = rs.getString("bond_int_scanned");
+                daysOFGoodsInWarehouse.setBond_int_scanned(m_bond_int_scanned);
+
+                String m_bond_vchar_status = rs.getString("bond_vchar_status");
+                daysOFGoodsInWarehouse.setBond_vchar_status(m_bond_vchar_status);
+
+                String m_bond_vchar_br = rs.getString("bond_vchar_br");
+                daysOFGoodsInWarehouse.setBond_vchar_br(m_bond_vchar_br);
+
+                String m_bond_NO = rs.getString("bond_NO");
+                daysOFGoodsInWarehouse.setBond_NO(m_bond_NO);
+
+                String m_bond_dttm_INSP = rs.getString("bond_dttm_INSP");
+                daysOFGoodsInWarehouse.setBond_dttm_INSP(m_bond_dttm_INSP);
+
+                String m_bond_dttm_LastManage = rs.getString("bond_dttm_LastManage");
+                daysOFGoodsInWarehouse.setBond_dttm_LastManage(m_bond_dttm_LastManage);
+
+                String m_bond_LastManager = rs.getString("bond_LastManager");
+                daysOFGoodsInWarehouse.setBond_LastManager(m_bond_LastManager);
+
+                String m_bond_LastCommentType = rs.getString("bond_LastCommentType");
+                daysOFGoodsInWarehouse.setBond_LastCommentType(m_bond_LastCommentType);
+
+                String m_bond_color = rs.getString("bond_color");
+                daysOFGoodsInWarehouse.setBond_color(m_bond_color);
+
+                String m_bond_LastCommentType2 = rs.getString("bond_LastCommentType2");
+                daysOFGoodsInWarehouse.setBond_LastCommentType2(m_bond_LastCommentType2);
+
+                String m_bond_LastCommentType_bkup = rs.getString("bond_LastCommentType_bkup");
+                daysOFGoodsInWarehouse.setBond_LastCommentType_bkup(m_bond_LastCommentType_bkup);
+
+                String m_hawbId = rs.getString("HawbId");
+                daysOFGoodsInWarehouse.setHawbId(m_hawbId);
+
+                String m_hawb = rs.getString("Hawb");
+                daysOFGoodsInWarehouse.setHawb(m_hawb);
+
+                String m_CSUser = rs.getString("CSUser");
+                daysOFGoodsInWarehouse.setCSUser(m_CSUser);
+
+                list.add(daysOFGoodsInWarehouse);
+
+                daysOFGoodsInWarehouse = new DaysOFGoodsInWarehouse();
+            }
+            rs.close();
+            rs = null;
+            stmt.close();
+            stmt = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+//            LOG.info("数据库连接失败" + e.getMessage());
+        } catch (Exception e) {
+//            LOG.info("数据库连接异常发生" + e.getMessage());
+        }
+        return list;
+    }
+
 }

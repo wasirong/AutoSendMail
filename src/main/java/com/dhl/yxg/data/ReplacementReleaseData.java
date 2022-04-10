@@ -1,5 +1,8 @@
 package com.dhl.yxg.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReplacementReleaseData {
 
     private String Hawb;
@@ -50,5 +53,26 @@ public class ReplacementReleaseData {
 
     public void setComment(String comment) {
         Comment = comment;
+    }
+
+    public List<String> dataList(){
+        List<String> list = new ArrayList<String>();
+        list.add(Hawb);
+        list.add(Type);
+        list.add(LastAccessDtm);
+        list.add(LastAccessUser);
+        list.add(Comment);
+        return list;
+    }
+
+    public List<String> titleList(){
+        List<String> titleList = new ArrayList<String>();
+        titleList.add("Hawb");
+        titleList.add("Type");
+        titleList.add("LastAccessDtm");
+        titleList.add("LastAccessUser");
+        titleList.add("Comment");
+        titleList.add("LocalDescription");
+        return titleList;
     }
 }
