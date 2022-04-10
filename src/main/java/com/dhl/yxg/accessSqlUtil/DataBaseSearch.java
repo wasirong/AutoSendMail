@@ -2,6 +2,7 @@ package com.dhl.yxg.accessSqlUtil;
 
 
 import com.dhl.yxg.data.ExportData_412;
+import com.dhl.yxg.data.Export_Report_5i;
 import com.dhl.yxg.data.ImportData_412;
 import com.dhl.yxg.util.WriteLogs;
 
@@ -176,7 +177,7 @@ public class DataBaseSearch {
         return list;
     }
 
-    public List<ImportData_412> GetImportData_412(String startDate, String endData) {
+    public List<ImportData_412> GetImportData_412(String startDate, String endDate) {
         try {
 
             System.out.println("驱动程序开始加载");
@@ -212,13 +213,13 @@ public class DataBaseSearch {
                 "left join nao_cdms_import.dbo.EDIDeclaration " +
                 "on nao_cdms_import.dbo.ShipmentWip.HawbId = nao_cdms_import.dbo.EDIDeclaration.HawbId " +
                 "where " +
-                "(LocalDescription like N'%书%' and ShipState = 'KP' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endData + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
-                " or (ShipTel = '0979123684' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endData + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
-                " or (ConsCity = 'DANDONG' and ConsAddr like N'%ZHENXING%' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endData + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
-                " or (ConsCity = 'YANBIAN' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endData + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
-                " or (ConsAddr like N'%YANHAI%' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endData + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
-                " or (ConsCompany like N'%Institute of Chemical Physics%' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endData + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
-                " or (ConsCompany like N'%Naval Academy%' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endData + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')";
+                "(LocalDescription like N'%书%' and ShipState = 'KP' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endDate + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
+                " or (ShipTel = '0979123684' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endDate + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
+                " or (ConsCity = 'DANDONG' and ConsAddr like N'%ZHENXING%' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endDate + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
+                " or (ConsCity = 'YANBIAN' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endDate + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
+                " or (ConsAddr like N'%YANHAI%' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endDate + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
+                " or (ConsCompany like N'%Institute of Chemical Physics%' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endDate + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')" +
+                " or (ConsCompany like N'%Naval Academy%' and GTW = 'DLC' and ImportDate between '" + startDate + "' and '" + endDate + "' and nao_cdms_import.dbo.ShipmentWip.Mawb != 'DUMMY')";
 
         List<ImportData_412> list = new ArrayList<ImportData_412>();
 
@@ -296,21 +297,12 @@ public class DataBaseSearch {
 
                 importData_412 = new ImportData_412();
             }
-            if (rs != null) {
-//                LOG.info("rs.close()");
-                rs.close();
-                rs = null;
-            }
-            if (stmt != null) {
-//                LOG.info("stmt.close()");
-                stmt.close();
-                stmt = null;
-            }
-            if (conn != null) {
-//                LOG.info("conn.close()");
-                conn.close();
-                conn = null;
-            }
+            rs.close();
+            rs = null;
+            stmt.close();
+            stmt = null;
+            conn.close();
+            conn = null;
         } catch (SQLException e) {
             e.printStackTrace();
 //            LOG.info("数据库连接失败" + e.getMessage());
@@ -320,4 +312,101 @@ public class DataBaseSearch {
         return list;
     }
 
+    public List<Export_Report_5i> GetExportReport5i(String startDate, String endDate) {
+        try {
+            System.out.println("驱动程序开始加载");
+            Class.forName(DBDRIVER);
+            System.out.println("驱动程序已加载");
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("驱动程序加载异常发生:" + e.getMessage());
+        }
+
+        Export_Report_5i export_report_5i = new Export_Report_5i();
+
+        Connection conn;
+        Statement stmt;
+        ResultSet rs;
+
+        String sql = "Select " +
+                "tmsShipmentWip.Hawb," +
+                "ShipCompany," +
+                "CodeTS," +
+                "HsCode," +
+                "GName," +
+                "LocalDescription," +
+                "GModel," +
+                "UnitMeasure," +
+                "ShipDate " +
+                "from nao_cdms_export.dbo.ESBDeclShipmentDetail " +
+                "left join nao_cdms_export.dbo.tmsShipmentWip " +
+                "on ESBDeclShipmentDetail.Hawb = tmsShipmentWip.Hawb " +
+                "left join nao_cdms_export.dbo.SimpleDeclarationItem " +
+                "on tmsShipmentWip.HawbId = SimpleDeclarationItem.HawbId " +
+                "where " +
+                "GTW = 'DLC' and ShipDate between '" + startDate + "' and '" + endDate + "' " +
+                "order by ShipDate asc";
+
+        List<Export_Report_5i> list = new ArrayList<Export_Report_5i>();
+
+        try {
+//            LOG.info("连接数据库");
+            System.out.println("连接数据库");
+            // 连接数据库
+//            conn = DriverManager.getConnection(url, user, password);
+            conn = DriverManager.getConnection(DBURL, USER, PASSWORD);
+            System.out.println(conn);//输出数据库连接
+            System.out.println("建立Statement对象");
+            // 建立Statement对象
+            stmt = conn.createStatement();
+//            LOG.info("执行数据库查询语句 : " + sql);
+            // 执行数据库查询语句
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String m_hawb = rs.getString("Hawb");
+                export_report_5i.setHawb(m_hawb);
+
+                String m_shipCompany = rs.getString("ShipCompany");
+                export_report_5i.setShipCompany(m_shipCompany);
+
+                String m_codeTS = rs.getString("CodeTS");
+                export_report_5i.setCodeTS(m_codeTS);
+
+                String m_hsCode = rs.getString("HsCode");
+                export_report_5i.setHsCode(m_hsCode);
+
+                String m_gName = rs.getString("GName");
+                export_report_5i.setGName(m_gName);
+
+                String m_localDescription = rs.getString("LocalDescription");
+                export_report_5i.setLocalDescription(m_localDescription);
+
+                String m_gModel = rs.getString("GModel");
+                export_report_5i.setGModel(m_gModel);
+
+                String m_unitMeasure = rs.getString("UnitMeasure");
+                export_report_5i.setUnitMeasure(m_unitMeasure);
+
+                String m_shipDate = rs.getString("ShipDate");
+                export_report_5i.setShipDate(m_shipDate);
+
+                list.add(export_report_5i);
+
+                export_report_5i = new Export_Report_5i();
+            }
+            rs.close();
+            rs = null;
+            stmt.close();
+            stmt = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+//            LOG.info("数据库连接失败" + e.getMessage());
+        } catch (Exception e) {
+//            LOG.info("数据库连接异常发生" + e.getMessage());
+        }
+
+        return list;
+    }
 }

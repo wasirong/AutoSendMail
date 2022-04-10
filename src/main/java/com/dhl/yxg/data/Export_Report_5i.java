@@ -1,5 +1,8 @@
 package com.dhl.yxg.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Export_Report_5i {
 
     private String Hawb;
@@ -90,5 +93,33 @@ public class Export_Report_5i {
 
     public void setShipDate(String shipDate) {
         ShipDate = shipDate;
+    }
+
+    public List<String> dataList(){
+        List<String> list = new ArrayList<String>();
+        list.add(Hawb);
+        list.add(ShipCompany);
+        list.add(CodeTS);
+        list.add(HsCode);
+        list.add(GName);
+        list.add(LocalDescription);
+        list.add(GModel);
+        list.add(UnitMeasure);
+        list.add(ShipDate);
+        return list;
+    }
+
+    public List<String> titleList(){
+        List<String> titleList = new ArrayList<String>();
+        titleList.add("Hawb");
+        titleList.add("ShipCompany");
+        titleList.add("CodeTS");
+        titleList.add("HsCode");
+        titleList.add("GName");
+        titleList.add("LocalDescription");
+        titleList.add("GModel");
+        titleList.add("UnitMeasure");
+        titleList.add("ShipDate");
+        return titleList;
     }
 }

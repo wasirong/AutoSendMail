@@ -2,6 +2,7 @@ package com.dhl.yxg.controllers;
 
 import com.dhl.yxg.accessSqlUtil.DataBaseSearch;
 import com.dhl.yxg.data.ExportData_412;
+import com.dhl.yxg.data.Export_Report_5i;
 import com.dhl.yxg.data.ImportData_412;
 import com.dhl.yxg.util.CreateWorkbook;
 import javafx.collections.FXCollections;
@@ -82,6 +83,8 @@ public class Controller {
                     break;
 
                 case "出口5i自助申报报告":
+                    List<Export_Report_5i> dataListExportReport_5i = dataBaseSearch.GetExportReport5i(StartTimeID.getValue().toString(), EndTimeID.getValue().toString());
+                    workbook = createWorkbook.generateExcel_ExportReport_5i(m_currentType, dataListExportReport_5i);
                     break;
 
                 case "货物14+在库天数":
