@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class CreateWorkbook {
 
@@ -103,6 +104,54 @@ public class CreateWorkbook {
         return workbook;
     }
 
+    public XSSFWorkbook generateExcel_Order(String sheetName, Map<String, Integer> myMapReceivingOrder, Map<String, Integer> myMapTransFerOrder,
+                                            List<ReceivingOrderData> receivingOrderDataList, List<TransFerOrderData> transFerOrderDataList) {
+
+        //创建工作薄
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        //创建表单
+        XSSFSheet sheet_receiving = genSheet(workbook, "接单");
+
+        //创建表单样式
+        XSSFCellStyle titleStyle_receiving = genTitleStyle(workbook);//创建标题样式
+
+        XSSFCellStyle contextStyle_receiving = genContextStyle(workbook);//创建文本样式
+
+        genExcel_ReceivingOrder(sheet_receiving, titleStyle_receiving, contextStyle_receiving, myMapReceivingOrder, "接单");
+
+        //创建表单
+        XSSFSheet sheet_transFer = genSheet(workbook, "转单");
+
+        //创建表单样式
+        XSSFCellStyle titleStyle_transFer = genTitleStyle(workbook);//创建标题样式
+
+        XSSFCellStyle contextStyle_transFer = genContextStyle(workbook);//创建文本样式
+
+        genExcel_TransFerOrder(sheet_transFer, titleStyle_transFer, contextStyle_transFer, myMapTransFerOrder, "转单");
+
+        //创建表单
+        XSSFSheet sheet_receiveBase = genSheet(workbook, "接单底数据");
+
+        //创建表单样式
+        XSSFCellStyle titleStyle_receiveBase = genTitleStyle(workbook);//创建标题样式
+
+        XSSFCellStyle contextStyle_receiveBase = genContextStyle(workbook);//创建文本样式
+
+        genExcel_receivingOrderBaseData(sheet_receiveBase, titleStyle_receiveBase, contextStyle_receiveBase, receivingOrderDataList, "接单底数据");
+
+        //创建表单
+        XSSFSheet sheet_transFerBase = genSheet(workbook, "转单底数据");
+
+        //创建表单样式
+        XSSFCellStyle titleStyle_transFerBase = genTitleStyle(workbook);//创建标题样式
+
+        XSSFCellStyle contextStyle_transFerBase = genContextStyle(workbook);//创建文本样式
+
+        genExcel_TransFerOrderBaseData(sheet_transFerBase, titleStyle_transFerBase, contextStyle_transFerBase, transFerOrderDataList, "转单底数据");
+
+        return workbook;
+    }
 
     //设置表单，并生成表单
     public XSSFSheet genSheet(XSSFWorkbook workbook, String sheetName) {
@@ -445,6 +494,184 @@ public class CreateWorkbook {
             for (int j = 0; j < daysOFGoodsInWarehouse.dataList().size(); j++) {
                 cell = row.createCell(j);//创建第三行第一列
                 cell.setCellValue(daysOFGoodsInWarehouse.dataList().get(j));//第三行第一列的值
+                cell.setCellStyle(contextStyle);
+            }
+        }
+    }
+
+    public void genExcel_ReceivingOrder(XSSFSheet sheet, XSSFCellStyle titleStyle, XSSFCellStyle contextStyle, Map<String, Integer> myMapReceivingOrder, String titleContent) {
+
+        //根据Excel列名长度，指定列名宽度  Excel总共2列
+        for (int i = 0; i < 2; i++) {
+            sheet.setColumnWidth(i, 4800);
+        }
+
+        //设置标题位置
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row
+                0, //last row
+                0, //first column
+                1 //last column
+        ));
+
+        XSSFRow row = sheet.createRow(0);//创建第一行，为标题，index从0开始
+        XSSFCell cell;
+        cell = row.createCell(0);//创建一列
+        cell.setCellValue(titleContent);//标题
+        cell.setCellStyle(titleStyle);//设置标题样式
+
+        row = sheet.createRow(1);//创建第二行
+        cell = row.createCell(0);//创建第二行第一列
+        cell.setCellValue("Name");
+        cell.setCellStyle(contextStyle);
+
+        cell = row.createCell(1);//创建第二行第二列
+        cell.setCellValue("Count");
+        cell.setCellStyle(contextStyle);
+
+        int lineNum = 2;
+
+        for (String key : myMapReceivingOrder.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + myMapReceivingOrder.get(key));
+
+            row = sheet.createRow(lineNum);//创建第三行
+
+            cell = row.createCell(0);//创建第三行第一列
+            cell.setCellValue(key);//第三行第一列的值
+            cell.setCellStyle(contextStyle);
+
+            cell = row.createCell(1);//创建第三行第一列
+            cell.setCellValue(myMapReceivingOrder.get(key));//第三行第一列的值
+            cell.setCellStyle(contextStyle);
+
+            lineNum++;
+        }
+    }
+
+    public void genExcel_TransFerOrder(XSSFSheet sheet, XSSFCellStyle titleStyle, XSSFCellStyle contextStyle, Map<String, Integer> myMapTransFerOrder, String titleContent) {
+
+        //根据Excel列名长度，指定列名宽度  Excel总共2列
+        for (int i = 0; i < 2; i++) {
+            sheet.setColumnWidth(i, 4800);
+        }
+
+        //设置标题位置
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row
+                0, //last row
+                0, //first column
+                1 //last column
+        ));
+
+        XSSFRow row = sheet.createRow(0);//创建第一行，为标题，index从0开始
+        XSSFCell cell;
+        cell = row.createCell(0);//创建一列
+        cell.setCellValue(titleContent);//标题
+        cell.setCellStyle(titleStyle);//设置标题样式
+
+        row = sheet.createRow(1);//创建第二行
+        cell = row.createCell(0);//创建第二行第一列
+        cell.setCellValue("Name");
+        cell.setCellStyle(contextStyle);
+
+        cell = row.createCell(1);//创建第二行第二列
+        cell.setCellValue("Count");
+        cell.setCellStyle(contextStyle);
+
+        int lineNum = 2;
+
+        for (String key : myMapTransFerOrder.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + myMapTransFerOrder.get(key));
+
+            row = sheet.createRow(lineNum);//创建第三行
+
+            cell = row.createCell(0);//创建第三行第一列
+            cell.setCellValue(key);//第三行第一列的值
+            cell.setCellStyle(contextStyle);
+
+            cell = row.createCell(1);//创建第三行第一列
+            cell.setCellValue(myMapTransFerOrder.get(key));//第三行第一列的值
+            cell.setCellStyle(contextStyle);
+
+            lineNum++;
+        }
+    }
+
+    public void genExcel_receivingOrderBaseData(XSSFSheet sheet, XSSFCellStyle titleStyle, XSSFCellStyle contextStyle, List<ReceivingOrderData> receivingOrderDataList, String titleContent) {
+
+        //根据Excel列名长度，指定列名宽度  Excel总共9列
+        for (int i = 0; i < 6; i++) {
+            sheet.setColumnWidth(i, 4800);
+        }
+
+        //设置标题位置
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row
+                0, //last row
+                0, //first column
+                5 //last column
+        ));
+
+        XSSFRow row = sheet.createRow(0);//创建第一行，为标题，index从0开始
+        XSSFCell cell;
+        cell = row.createCell(0);//创建一列
+        cell.setCellValue(titleContent);//标题
+        cell.setCellStyle(titleStyle);//设置标题样式
+
+        row = sheet.createRow(1);//创建第二行
+        List<String> title = new ReceivingOrderData().titleList();
+        for (int k = 0; k < title.size(); k++) {
+            cell = row.createCell(k);//创建第二行第一列
+            cell.setCellValue(title.get(k));
+            cell.setCellStyle(contextStyle);
+        }
+
+        for (int i = 0; i < receivingOrderDataList.size(); i++) {
+            ReceivingOrderData receivingOrderData = (ReceivingOrderData) (receivingOrderDataList.get(i));
+            row = sheet.createRow(i + 2);//创建第三行
+            for (int j = 0; j < receivingOrderData.dataList().size(); j++) {
+                cell = row.createCell(j);//创建第三行第一列
+                cell.setCellValue(receivingOrderData.dataList().get(j));//第三行第一列的值
+                cell.setCellStyle(contextStyle);
+            }
+        }
+    }
+
+    public void genExcel_TransFerOrderBaseData(XSSFSheet sheet, XSSFCellStyle titleStyle, XSSFCellStyle contextStyle, List<TransFerOrderData> transFerOrderDataList, String titleContent) {
+
+        //根据Excel列名长度，指定列名宽度  Excel总共9列
+        for (int i = 0; i < 6; i++) {
+            sheet.setColumnWidth(i, 4800);
+        }
+
+        //设置标题位置
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row
+                0, //last row
+                0, //first column
+                5 //last column
+        ));
+
+        XSSFRow row = sheet.createRow(0);//创建第一行，为标题，index从0开始
+        XSSFCell cell;
+        cell = row.createCell(0);//创建一列
+        cell.setCellValue(titleContent);//标题
+        cell.setCellStyle(titleStyle);//设置标题样式
+
+        row = sheet.createRow(1);//创建第二行
+        List<String> title = new TransFerOrderData().titleList();
+        for (int k = 0; k < title.size(); k++) {
+            cell = row.createCell(k);//创建第二行第一列
+            cell.setCellValue(title.get(k));
+            cell.setCellStyle(contextStyle);
+        }
+
+        for (int i = 0; i < transFerOrderDataList.size(); i++) {
+            TransFerOrderData transFerOrderData = (TransFerOrderData) (transFerOrderDataList.get(i));
+            row = sheet.createRow(i + 2);//创建第三行
+            for (int j = 0; j < transFerOrderData.dataList().size(); j++) {
+                cell = row.createCell(j);//创建第三行第一列
+                cell.setCellValue(transFerOrderData.dataList().get(j));//第三行第一列的值
                 cell.setCellStyle(contextStyle);
             }
         }

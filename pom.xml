@@ -119,6 +119,20 @@
             <artifactId>big-math</artifactId>
             <version>2.3.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ini4j</groupId>
+            <artifactId>ini4j</artifactId>
+            <version>0.5.4</version>
+        </dependency>
+
+
         <!--        <dependency>-->
         <!--            <groupId>com.opencsv</groupId>-->
         <!--            <artifactId>opencsv</artifactId>-->

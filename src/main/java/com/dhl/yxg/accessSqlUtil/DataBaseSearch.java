@@ -18,31 +18,6 @@ public class DataBaseSearch {
 
     public List<ExportData_412> GetExportData_412(String startDate, String endData) {
         try {
-//            String sql = "Select " +
-//                    "ExportDate," +
-//                    "nao_cdms_export.dbo.tmsShipmentWip.Mawb," +
-//                    "nao_cdms_export.dbo.tmsShipmentWip.Hawb," +
-//                    "ClearanceCategory," +
-//                    "TotalPiece," +
-//                    "TotalKgWeight," +
-//                    "LocalDescription," +
-//                    "ShipCompany," +
-//                    "ShipAddr," +
-//                    "ShipCity," +
-//                    "ConsCountry," +
-//                    "ConsTel " +
-//                    "from nao_cdms_export.dbo.tmsShipmentWip " +
-//                    "left join nao_cdms_export.dbo.LocalFlightWip " +
-//                    "on nao_cdms_export.dbo.tmsShipmentWip.LocalFlightId = nao_cdms_export.dbo.LocalFlightWip.LocalFlightId " +
-//                    "where " +
-//                    "(GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and LocalDescription like N'%书%' and ShipCountry = 'KP')" +
-//                    "or (GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and ShipTel = '0979123684')" +
-//                    "or (GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and ShipCity = 'DANDONG' and ShipAddr like N'%ZHENXING%')" +
-//                    "or (GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and ShipCity = 'YANBIAN')" +
-//                    "or (GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and ShipAddr like N'%YANHAI%')" +
-//                    "or (GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and ShipCompany like N'%Institute of Chemical Physics%')" +
-//                    "or (GTW = 'DLC' and ExportDate between " + startDate + " and " + endData + " and ShipCompany like N'%Naval Academy%')";
-//            System.out.println(sql);
             System.out.println("驱动程序开始加载");
             Class.forName(DBDRIVER);
             System.out.println("驱动程序已加载");
@@ -434,7 +409,7 @@ public class DataBaseSearch {
                 "left join nao_cdms_import.dbo.ShipmentWip " +
                 "on nao_cdms_import.dbo.ShipmentWip.HawbId = nao_cdms_import.dbo.HawbLog.HawbId " +
                 "where " +
-                "LastAccessUser = 'SR_DLCGTWFRONTDE' " +
+                "LastAccessUser = 'XIAOHGUO' " +
                 "and nao_cdms_import.dbo.HawbLog.Comment like N'%E1-海关手工放行%' " +
                 "and LastAccessDtm between '" + startDate + "' and '" + endDate + "' " +
                 "order by LastAccessDtm asc";
@@ -465,7 +440,7 @@ public class DataBaseSearch {
                 replacementReleaseData.setLastAccessDtm(m_lastAccessDtm);
 
                 String m_lastAccessUser = rs.getString("LastAccessUser");
-                replacementReleaseData.setLastAccessDtm(m_lastAccessUser);
+                replacementReleaseData.setLastAccessUser(m_lastAccessUser);
 
                 String m_comment = rs.getString("Comment");
                 replacementReleaseData.setComment(m_comment);
@@ -528,7 +503,7 @@ public class DataBaseSearch {
                 "[bond_LastCommentType], " +
                 "[bond_color], " +
                 "[bond_LastCommentType2], " +
-                "[bond_LastCommentType_bkup], " +
+                "[bond_LastCommentType_bkup] " +
                 "from [db_GPMS].[dbo].[tb_bond_daily_data] where [bond_vchar_gtw] = 'DLC' AND [bond_date_last_report] BETWEEN ' " + startDate + "' AND '" + endDate + "' AND [bond_int_dayinbond] > 13 ) " +
                 "A left join(select [HawbId]," +
                 "[Hawb]," +
@@ -537,8 +512,8 @@ public class DataBaseSearch {
                 "L.[GTW], " +
                 "L.[PayerAccount], " +
                 "L.[CSUser], " +
-                "L.[CreationDate] " +
-                "ROW_NUMBER() OVER(PARTITION BY L.[Hawb] ORDER BY L.[CreationDate] DESC) AS [DtmBYHawbidRank]from(SELECT [HawbId], " +
+                "L.[CreationDate], " +
+                "ROW_NUMBER() OVER(PARTITION BY L.[Hawb] ORDER BY L.[CreationDate] DESC) AS [DtmBYHawbidRank] from (SELECT [HawbId], " +
                 "[Hawb], " +
                 "[GTW], " +
                 "[PayerAccount], " +
@@ -670,4 +645,173 @@ public class DataBaseSearch {
         return list;
     }
 
+    public List<ReceivingOrderData> GetReceivingOrderData(String startDate, String endDate) {
+        try {
+            System.out.println("驱动程序开始加载");
+            Class.forName(DBDRIVER);
+            System.out.println("驱动程序已加载");
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("驱动程序加载异常发生:" + e.getMessage());
+        }
+
+        ReceivingOrderData receivingOrderData = new ReceivingOrderData();
+
+        Connection conn;
+        Statement stmt;
+        ResultSet rs;
+
+        String sql = "Select " +
+                "Hawb, " +
+                "ClearanceCategory, " +
+                "Type," +
+                "LastAccessDtm," +
+                "LastAccessUser," +
+                "nao_cdms_import.dbo.HawbLog.Comment " +
+                "from nao_cdms_import.dbo.HawbLog " +
+                "left join nao_cdms_import.dbo.ShipmentWip " +
+                "on nao_cdms_import.dbo.ShipmentWip.HawbId = nao_cdms_import.dbo.HawbLog.HawbId " +
+                "where " +
+                "nao_cdms_import.dbo.HawbLog.Comment like N'%CS理单%' " +
+                " and GTW = 'DLC' " +
+                " and Type like N'%工作完成%' " +
+                " and LastAccessDtm between '" + startDate + "' and '" + endDate + "'";
+
+        List<ReceivingOrderData> list = new ArrayList<ReceivingOrderData>();
+
+        try {
+//            LOG.info("连接数据库");
+            System.out.println("连接数据库");
+            // 连接数据库
+//            conn = DriverManager.getConnection(url, user, password);
+            conn = DriverManager.getConnection(DBURL, USER, PASSWORD);
+            System.out.println(conn);//输出数据库连接
+            System.out.println("建立Statement对象");
+            // 建立Statement对象
+            stmt = conn.createStatement();
+//            LOG.info("执行数据库查询语句 : " + sql);
+            // 执行数据库查询语句
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String m_hawb = rs.getString("Hawb");
+                receivingOrderData.setHawb(m_hawb);
+
+                String m_clearanceCategory = rs.getString("ClearanceCategory");
+                receivingOrderData.setClearanceCategory(m_clearanceCategory);
+
+                String m_type = rs.getString("Type");
+                receivingOrderData.setType(m_type);
+
+                String m_lastAccessDtm = rs.getString("LastAccessDtm");
+                receivingOrderData.setLastAccessDtm(m_lastAccessDtm);
+
+                String m_lastAccessUser = rs.getString("LastAccessUser");
+                receivingOrderData.setLastAccessUser(m_lastAccessUser);
+
+                String m_comment = rs.getString("Comment");
+                receivingOrderData.setComment(m_comment);
+
+                list.add(receivingOrderData);
+
+                receivingOrderData = new ReceivingOrderData();
+            }
+            rs.close();
+            rs = null;
+            stmt.close();
+            stmt = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+//            LOG.info("数据库连接失败" + e.getMessage());
+        } catch (Exception e) {
+//            LOG.info("数据库连接异常发生" + e.getMessage());
+        }
+        return list;
+    }
+
+    public List<TransFerOrderData> GetTransFerOrderData(String startDate, String endDate) {
+        try {
+            System.out.println("驱动程序开始加载");
+            Class.forName(DBDRIVER);
+            System.out.println("驱动程序已加载");
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("驱动程序加载异常发生:" + e.getMessage());
+        }
+
+        TransFerOrderData transFerOrderData = new TransFerOrderData();
+
+        Connection conn;
+        Statement stmt;
+        ResultSet rs;
+
+        String sql = "Select " +
+                "Hawb, " +
+                "ClearanceCategory, " +
+                "Type," +
+                "LastAccessDtm," +
+                "LastAccessUser," +
+                "nao_cdms_import.dbo.HawbLog.Comment " +
+                "from nao_cdms_import.dbo.HawbLog " +
+                "left join nao_cdms_import.dbo.ShipmentWip " +
+                "on nao_cdms_import.dbo.ShipmentWip.HawbId = nao_cdms_import.dbo.HawbLog.HawbId " +
+                "where " +
+                "nao_cdms_import.dbo.HawbLog.Comment like N'%CS未处理%'  " +
+                " and GTW = 'DLC' " +
+                " and Type like N'%工作完成%' " +
+                " and LastAccessDtm between '" + startDate + "' and '" + endDate + "'";
+
+        List<TransFerOrderData> list = new ArrayList<TransFerOrderData>();
+
+        try {
+//            LOG.info("连接数据库");
+            System.out.println("连接数据库");
+            // 连接数据库
+//            conn = DriverManager.getConnection(url, user, password);
+            conn = DriverManager.getConnection(DBURL, USER, PASSWORD);
+            System.out.println(conn);//输出数据库连接
+            System.out.println("建立Statement对象");
+            // 建立Statement对象
+            stmt = conn.createStatement();
+//            LOG.info("执行数据库查询语句 : " + sql);
+            // 执行数据库查询语句
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                String m_hawb = rs.getString("Hawb");
+                transFerOrderData.setHawb(m_hawb);
+
+                String m_clearanceCategory = rs.getString("ClearanceCategory");
+                transFerOrderData.setClearanceCategory(m_clearanceCategory);
+
+                String m_type = rs.getString("Type");
+                transFerOrderData.setType(m_type);
+
+                String m_lastAccessDtm = rs.getString("LastAccessDtm");
+                transFerOrderData.setLastAccessDtm(m_lastAccessDtm);
+
+                String m_lastAccessUser = rs.getString("LastAccessUser");
+                transFerOrderData.setLastAccessUser(m_lastAccessUser);
+
+                String m_comment = rs.getString("Comment");
+                transFerOrderData.setComment(m_comment);
+
+                list.add(transFerOrderData);
+
+                transFerOrderData = new TransFerOrderData();
+            }
+            rs.close();
+            rs = null;
+            stmt.close();
+            stmt = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+//            LOG.info("数据库连接失败" + e.getMessage());
+        } catch (Exception e) {
+//            LOG.info("数据库连接异常发生" + e.getMessage());
+        }
+        return list;
+    }
 }

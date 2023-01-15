@@ -20,7 +20,7 @@
 <!--        </Image>-->
     </ImageView>
     <children>
-        <Pane prefHeight="414.0" prefWidth="849.0" GridPane.columnIndex="1">
+        <Pane prefHeight="390.0" prefWidth="849.0" GridPane.columnIndex="1">
             <children>
                 <Label layoutX="17.0" layoutY="29.0" text="邮件类型 :">
                     <font>
@@ -42,7 +42,19 @@
                 </Label>
                 <DatePicker fx:id="EndTimeID" layoutX="103.0" layoutY="123.0" />
                 <Button fx:id="CreateModelID" layoutX="17.0" layoutY="171.0" mnemonicParsing="false" onAction="#CreateEnclosure" text="附件作成" />
+                <Button fx:id="SendMailID" layoutX="228.0" layoutY="171.0" mnemonicParsing="false" onAction="#SendMailID" text="邮件送付" />
                 <Separator layoutX="-3.0" layoutY="213.0" prefHeight="0.0" prefWidth="840.0" />
+
+                <Label fx:id="ActionTarget" layoutX="17.0" layoutY="220.0" text="状态">
+                    <font>
+                        <Font name="Microsoft YaHei Bold" size="10.0" />
+                    </font>
+                </Label>
+                <Label layoutX="675.0" layoutY="335.0" text="如有问题请及时联系 :  yunxia.gao@dhl.com" textFill="#6f5e5ea3">
+                    <font>
+                        <Font size="8.0" />
+                    </font>
+                </Label>
             </children>
         </Pane>
     </children>

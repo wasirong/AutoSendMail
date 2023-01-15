@@ -3,9 +3,11 @@ package com.dhl.yxg.data;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReplacementReleaseData {
+public class TransFerOrderData {
 
     private String Hawb;
+
+    private String ClearanceCategory;
 
     private String Type;
 
@@ -15,12 +17,32 @@ public class ReplacementReleaseData {
 
     private String Comment;
 
+    public TransFerOrderData() {
+    }
+
+    public TransFerOrderData(String hawb, String clearanceCategory, String type, String lastAccessDtm, String lastAccessUser, String comment) {
+        Hawb = hawb;
+        ClearanceCategory = clearanceCategory;
+        Type = type;
+        LastAccessDtm = lastAccessDtm;
+        LastAccessUser = lastAccessUser;
+        Comment = comment;
+    }
+
     public String getHawb() {
         return Hawb;
     }
 
     public void setHawb(String hawb) {
         Hawb = hawb;
+    }
+
+    public String getClearanceCategory() {
+        return ClearanceCategory;
+    }
+
+    public void setClearanceCategory(String clearanceCategory) {
+        ClearanceCategory = clearanceCategory;
     }
 
     public String getType() {
@@ -58,6 +80,7 @@ public class ReplacementReleaseData {
     public List<String> dataList(){
         List<String> list = new ArrayList<String>();
         list.add(Hawb);
+        list.add(ClearanceCategory);
         list.add(Type);
         list.add(LastAccessDtm);
         list.add(LastAccessUser);
@@ -68,6 +91,7 @@ public class ReplacementReleaseData {
     public List<String> titleList(){
         List<String> titleList = new ArrayList<String>();
         titleList.add("Hawb");
+        titleList.add("ClearanceCategory");
         titleList.add("Type");
         titleList.add("LastAccessDtm");
         titleList.add("LastAccessUser");
